@@ -18,6 +18,7 @@ class Pozione:
         self.__effetto = effetto 
         self.__quantita = quantita
         self.__durata = durata
+        self.__consumata = False
 
 
     @property
@@ -45,46 +46,25 @@ class Pozione:
         return self.__durata
 
 
-    def applica_a(self, bersaglio):
+    def applica_a(self, giocatore):
         """
         Applica l’effetto della pozione al bersaglio.
         Restituisce un dizionario di log, es:
         {"effetto": "cura", "quantita": 10, "durata": 0}
         """
+        if self.__effetto == 'cura':
+            if hasattr(giocatore, 'applica_cura') and callable(getattr(giocatore, 'applica_cura')):
+                giocatore.applica_cura(self.quantita)
+                self.__consumata = True
+            else:
+                ValueError("L'attributo 'applica_cura' non è definito")
+        else:
+            if hasattr(giocatore, 'applica_buff') and callable(getattr(giocatore, 'applica_buff')):
+                giocatore.applica_buff(self.quantita)
+                self.__consumata = True
+            else:
+                ValueError("L'attributo 'applica_cura' non è definito")
 
-        # # 2. verifica che il bersaglio abbia i metodi necessari
-        # #    usa hasattr(bersaglio, 'cura') e callable(...)
-
-        # # 3. usa l'effetto corretto:
-        # #    - se cura → chiama __applica_cura(bersaglio)
-        # #    - se buff_forza → chiama __applica_buff(bersaglio, "forza")
-        # #    - se buff_destrezza → chiama __applica_buff(bersaglio, "destrezza")
-
-        # # 4. imposta __consumata = True
-
-        # # 5. ritorna un dizionario log con "effetto", "quantita", "durata"
-        pass
-
-    # ===========================
-    # METODI PRIVATI
-    # ===========================
-    def __applica_cura(self, bersaglio):
-        # # chiama bersaglio.cura(self.__quantita)
-        # # restituisce la quantita curata (opzionale)
-        pass
-
-    def __applica_buff(self, bersaglio, statistica):
-        # # chiama:
-        # # bersaglio.aggiungi_buff(statistica, self.__quantita, self.__durata)
-        pass
-
-    # ===========================
-    # STRINGA DI DESCRIZIONE
-    # ===========================
+        
     def __str__(self):
-        # # se cura:
-        # #   return f"Pozione(cura +{self.__quantita})"
-        # #
-        # # se buff:
-        # #   return f"Pozione(buff {self.__effetto} +{self.__quantita} x{self.__durata}t)"
-        pass
+        return f"{self.__nome}: Effetto --> {self.__effetto}, Quantità --> {self.__quantita}, Durata --> {self.__durata}."
