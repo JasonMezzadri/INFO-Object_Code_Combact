@@ -8,6 +8,7 @@ class Personaggio:
         # --- Attributi privati originali (OK) ---
         self.__nome = nome
         self.__vita_massima = vita_massima
+
         self.__vita = vita_massima
         self.__forza = forza
         self.__destrezza = destrezza
@@ -111,9 +112,11 @@ class Personaggio:
     # ===========================
     # METODI NUOVI Parte 3
     # ===========================
-    def cura(self, quantita: int):
-        # # aumenta la vita e poi applica clamp
-        pass
+    def applica_cura(self, quantita: int):
+        if self.__vita + quantita > self.__vita_massima:
+            self.__vita = self.__vita_massima
+        self.__vita += quantita
+        
 
     def aggiungi_buff(self, stat, valore, durata):
         # # append alla lista __buffs
